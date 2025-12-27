@@ -2,7 +2,7 @@
 
 **A machine learning framework for distinguishing epilepsy from mimickers using routine interictal EEG.**
 
-## 📌 Overview
+##  Overview
 
 This project implements an **Interictal Clinical Signature (ICS)**: a 13-dimensional biomarker designed to distinguish epilepsy from clinical mimickers (e.g., PNES, syncope). 
 
@@ -10,7 +10,7 @@ Unlike prior work often limited to single-centre studies with small sample sizes
 
 > **Significance:** The ICS framework provides an accessible, interpretable decision-support tool for epilepsy diagnostics. Our findings on asymmetric cross-centre behavior highlight the need for centre-specific calibration or domain adaptation in multi-site deployment.
 
-## 📊 Dataset
+##  Dataset
 
 The study utilizes routine interictal EEG data from two tertiary care centres, encompassing diverse epilepsy subtypes and mimicker categories.
 
@@ -19,7 +19,7 @@ The study utilizes routine interictal EEG data from two tertiary care centres, e
 | **IHBAS** | $230$ | **Epilepsy:** Generalised, focal, focal-to-bilateral, combined, syndrome-specific.<br>**Mimickers:** Psychogenic/functional, cardiac/syncope, cerebrovascular/metabolic, sleep/autonomic/movement disorders. |
 | **MAX** | $218$ | Similar diversity in subtypes and mimickers. |
 
-## ⚙️ Methodology
+##  Methodology
 
 ### Preprocessing & Segmentation
 * Continuous EEG recordings were segmented into **10-second epochs**.
@@ -38,7 +38,7 @@ A **two-stage logistic regression** framework was used:
 2.  **Stage 2:** Generates subject-level predictions.
 3.  **Evaluation:** Area Under the Curve (AUC), Calibration plots, and Decision Curve Analysis.
 
-## 📈 Results
+##  Results
 
 ### Within-Centre Performance
 The biomarker demonstrated robust classification performance within each centre.
