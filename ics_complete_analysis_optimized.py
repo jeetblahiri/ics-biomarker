@@ -4,13 +4,6 @@
 """
 Complete ICS-based epilepsy vs mimicker biomarker analysis.
 
-OPTIMIZED VERSION with:
-1. Feature caching to disk (avoid recomputation)
-2. Parallel epoch processing with joblib
-3. Fixed sampling invariance (runs single-center CV at each rate)
-4. Proper cross-center generalization
-5. All sklearn/matplotlib compatibility fixes
-
 Usage:
     python ics_complete_analysis_optimized.py \
         --ihbas_root preprocessed_ihbas \
