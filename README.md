@@ -1,63 +1,34 @@
-# Interpretable Multi-Centre Interictal EEG Biomarker for Epilepsy
+# Interictal Clinical Signatures (ICS): Epilepsy vs Mimickers from Routine Interictal EEG
 
-**A machine learning framework for distinguishing epilepsy from mimickers using routine interictal EEG.**
+**Interpretable 13-feature biomarker + logistic regression to distinguish epilepsy from common mimickers (e.g., PNES/FND, syncope) using routine interictal EEG.**
 
-##  Overview
+## Dataset (multi-centre)
+- **IHBAS:** N = 230 (115 epilepsy / 115 mimickers)
+- **MAX:** N = 218 (109 epilepsy / 109 mimickers)
+- **Total:** N = 448  
+(10-second epochs; robustness tested across 20–125 Hz.) :contentReference[oaicite:0]{index=0}
 
-This project implements an **Interictal Clinical Signature (ICS)**: a 13-dimensional biomarker designed to distinguish epilepsy from clinical mimickers (e.g., PNES, syncope). 
+## Method (high level)
+- Segment EEG into 10 s epochs
+- Compute **13 ICS features** (slowing, PDR, complexity, synchrony)
+- **Two-stage logistic regression** for subject-level probability
 
-Unlike prior work often limited to single-centre studies with small sample sizes, this study validates the biomarker across two tertiary centres, addressing the critical challenge of acquisition differences and cross-centre generalization.
+## Results (subject-level AUC)
+**Within-centre (5-fold CV; recording length excluded):**
+- **IHBAS:** **0.723** (95% CI 0.655–0.783)
+- **MAX:** **0.790** (95% CI 0.722–0.845) :contentReference[oaicite:1]{index=1}
 
-> **Significance:** The ICS framework provides an accessible, interpretable decision-support tool for epilepsy diagnostics. Our findings on asymmetric cross-centre behavior highlight the need for centre-specific calibration or domain adaptation in multi-site deployment.
+**Cross-centre generalisation (recording length confound controlled):**
+- **MAX → IHBAS:** **0.725**
+- **IHBAS → MAX:** **0.725** :contentReference[oaicite:2]{index=2}
 
-##  Dataset
+**Recording-length confound (what *not* to do):**
+- If recording length is included, transfer becomes asymmetric:
+  - MAX → IHBAS: 0.716
+  - IHBAS → MAX: **0.360 (inverted predictions)** :contentReference[oaicite:3]{index=3}
 
-The study utilizes routine interictal EEG data from two tertiary care centres, encompassing diverse epilepsy subtypes and mimicker categories.
+**Fixed-duration truncation (10/20/30 min):**
+- Cross-centre AUC stays ~**0.70–0.72** in both directions. :contentReference[oaicite:4]{index=4}
 
-| Centre | Sample Size ($N$) | Cohort Composition |
-| :--- | :--- | :--- |
-| **IHBAS** | $230$ | **Epilepsy:** Generalised, focal, focal-to-bilateral, combined, syndrome-specific.<br>**Mimickers:** Psychogenic/functional, cardiac/syncope, cerebrovascular/metabolic, sleep/autonomic/movement disorders. |
-| **MAX** | $218$ | Similar diversity in subtypes and mimickers. |
-
-##  Methodology
-
-### Preprocessing & Segmentation
-* Continuous EEG recordings were segmented into **10-second epochs**.
-* Robustness tested across sampling frequencies of 20–125 Hz.
-
-### Feature Extraction: The ICS
-We computed a **13-dimensional Interictal Clinical Signature (ICS)** encoding clinically grounded features:
-1.  **Spectral Slowing:** Analysis of lower frequency bands.
-2.  **Posterior Dominant Rhythm (PDR):** Alpha band characteristics.
-3.  **Complexity:** Information content and signal entropy.
-4.  **Network Synchrony:** Functional connectivity measures.
-
-### Classification Framework
-A **two-stage logistic regression** framework was used:
-1.  **Stage 1:** Aggregates epoch-level features.
-2.  **Stage 2:** Generates subject-level predictions.
-3.  **Evaluation:** Area Under the Curve (AUC), Calibration plots, and Decision Curve Analysis.
-
-##  Results
-
-### Within-Centre Performance
-The biomarker demonstrated robust classification performance within each centre.
-
-| Centre | Subject-Level AUC | 95% Confidence Interval |
-| :--- | :--- | :--- |
-| **IHBAS** | **0.760** | 0.698 -- 0.819 |
-| **MAX** | **0.790** | 0.728 -- 0.848 |
-
-*Note: Feature-level effect sizes were counterintuitively higher in IHBAS (mean $|d| = 0.162$) compared to MAX (mean $|d| = 0.143$), suggesting performance differences stem from recording duration and calibration rather than intrinsic feature separability.*
-
-### Cross-Centre Generalisation
-Our experiments revealed a striking **asymmetric generalisation**:
-
-* **MAX $\to$ IHBAS:** Models trained on MAX transferred reasonably well to IHBAS (AUC = **0.716**).
-* **IHBAS $\to$ MAX:** Models trained on IHBAS failed to generalize, showing inverted predictions on MAX (AUC = **0.360**).
-
-This suggests the existence of fundamentally different, centre-specific signatures requiring domain adaptation.
-
-## 📝 Citation
-
-To be updated...
+## Citation
+To be updated.
