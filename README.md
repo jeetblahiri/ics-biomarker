@@ -31,4 +31,16 @@
 - Cross-centre AUC stays ~**0.70–0.72** in both directions. 
 
 ## Citation
-To be updated.
+
+If you use this work, please cite:
+
+```bibtex
+@article{lahiri2026robust,
+  author  = {Lahiri, J. B. and Agarwal, P. and Kushwaha, S. and Singh, M. and Panwar, S.},
+  title   = {Robust multi-centre interictal EEG biomarker for distinguishing epilepsy from mimickers},
+  journal = {Journal of Neural Engineering},
+  year    = {2026},
+  doi     = {10.1088/1741-2552/ae7906},
+  url     = {https://doi.org/10.1088/1741-2552/ae7906}
+}
+```
