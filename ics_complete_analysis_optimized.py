@@ -136,10 +136,15 @@ def get_channel_index(name: str, n_channels: int) -> int:
 # ----------------------------- Feature Caching -----------------------------
 
 
-def get_cache_key(records: List[SubjectRecord], seg_sec: float, target_fs: Optional[float]) -> str:
+def get_cache_key(
+    records: List[SubjectRecord],
+    seg_sec: float,
+    target_fs: Optional[float],
+    max_epochs_per_record: Optional[int] = None,
+) -> str:
     """Generate a unique cache key based on data files and parameters."""
     paths_str = "|".join(sorted(str(r.path) for r in records))
-    params_str = f"seg={seg_sec}_fs={target_fs}"
+    params_str = f"seg={seg_sec}_fs={target_fs}_max_epochs={max_epochs_per_record}"
     combined = f"{paths_str}|{params_str}"
     return hashlib.md5(combined.encode()).hexdigest()[:16]
 
@@ -349,7 +354,7 @@ def resample_epoch(epoch: np.ndarray, orig_fs: float, target_fs: float, seg_sec:
 
 def _process_single_record(args):
     """Process a single subject record (for parallel execution)."""
-    rec_path, rec_label, rec_subject_id, seg_sec, target_fs = args
+    rec_path, rec_label, rec_subject_id, seg_sec, target_fs, max_epochs_per_record = args
     
     results = []
     try:
@@ -360,6 +365,9 @@ def _process_single_record(args):
         N_seg, C, T = arr.shape
         orig_fs = float(T) / float(seg_sec)
         
+        if max_epochs_per_record is not None:
+            N_seg = min(N_seg, max_epochs_per_record)
+
         for seg_idx in range(N_seg):
             epoch = arr[seg_idx]
             if target_fs is not None and not math.isclose(orig_fs, target_fs, rel_tol=1e-6):
@@ -380,12 +388,13 @@ def build_epoch_features_parallel(
     n_jobs: int = -1,
     cache_dir: Optional[Path] = None,
     show_progress: bool = True,
+    max_epochs_per_record: Optional[int] = None,
 ) -> Tuple[np.ndarray, np.ndarray, List[str], List[str]]:
     """Build epoch-level features with parallel processing and caching."""
     
     # Check cache first
     if cache_dir is not None:
-        cache_key = get_cache_key(records, seg_sec, target_fs)
+        cache_key = get_cache_key(records, seg_sec, target_fs, max_epochs_per_record)
         cached = load_cached_features(cache_dir, cache_key)
         if cached is not None:
             if show_progress:
@@ -400,7 +409,7 @@ def build_epoch_features_parallel(
     
     # Prepare arguments for parallel processing
     args_list = [
-        (str(rec.path), rec.label, rec.subject_id, seg_sec, target_fs)
+        (str(rec.path), rec.label, rec.subject_id, seg_sec, target_fs, max_epochs_per_record)
         for rec in records
     ]
     

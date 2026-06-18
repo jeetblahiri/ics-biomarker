@@ -1,0 +1,25 @@
+# Python generated files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local environments and notebooks
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Generated EEG/preprocessing artifacts
+*.npy
+*.npz
+*.pkl
+preprocessed_*/
+
+# Experiment outputs and feature caches
+aarogya_ics_results*/
+aarogya_feature_cache*/
+feature_cache*/
+ics_results*/
+
+# Logs and OS/editor files
+*.log
+.DS_Store
