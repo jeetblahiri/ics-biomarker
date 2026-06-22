@@ -476,7 +476,14 @@ def build_epoch_features_parallel(
 # ----------------------------- Subject-Level Features -----------------------------
 
 
-def build_subject_features(X_epoch, y_epoch, subj_ids_epoch, proba_epoch, feature_names):
+def build_subject_features(
+    X_epoch,
+    y_epoch,
+    subj_ids_epoch,
+    proba_epoch,
+    feature_names,
+    include_log_n_epochs=True,
+):
     """Build subject-level features with probability tail statistics."""
     subj_epoch_indices = defaultdict(list)
     for idx, sid in enumerate(subj_ids_epoch):
@@ -507,7 +514,8 @@ def build_subject_features(X_epoch, y_epoch, subj_ids_epoch, proba_epoch, featur
             p_mean = p_std = p_q90 = p_q95 = p_top20 = 0.0
         
         feats.extend([p_mean, p_std, p_q90, p_q95, p_top20])
-        feats.append(math.log(len(idxs) + 1.0))
+        if include_log_n_epochs:
+            feats.append(math.log(len(idxs) + 1.0))
         
         subj_feature_list.append(np.asarray(feats, dtype=np.float32))
     
@@ -515,7 +523,9 @@ def build_subject_features(X_epoch, y_epoch, subj_ids_epoch, proba_epoch, featur
     y_subj = np.asarray(subj_labels, dtype=np.int64)
     
     subj_feature_names = [f"mean_{n}" for n in feature_names] + [f"std_{n}" for n in feature_names]
-    subj_feature_names.extend(["p_mean", "p_std", "p_q90", "p_q95", "p_mean_top20", "log_n_epochs"])
+    subj_feature_names.extend(["p_mean", "p_std", "p_q90", "p_q95", "p_mean_top20"])
+    if include_log_n_epochs:
+        subj_feature_names.append("log_n_epochs")
     
     return np.nan_to_num(X_subj, nan=0.0, posinf=0.0, neginf=0.0), y_subj, subj_feature_names, subj_ids_unique
 
